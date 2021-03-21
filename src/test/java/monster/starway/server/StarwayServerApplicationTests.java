@@ -1,4 +1,4 @@
-package com.howtodoinjava.demo;
+package monster.starway.server;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
