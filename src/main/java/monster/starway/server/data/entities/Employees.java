@@ -1,4 +1,4 @@
-package monster.starway.server.entities;
+package monster.starway.server.data.entities;
 
 import java.util.ArrayList;
 import java.util.List;

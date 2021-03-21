@@ -1,11 +1,11 @@
-package monster.starway.server.dao;
+package monster.starway.server.data.repository;
 
-import monster.starway.server.entities.Employee;
-import monster.starway.server.entities.Employees;
+import monster.starway.server.data.entities.Employee;
+import monster.starway.server.data.entities.Employees;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class EmployeeDAO 
+public class EmployeeRepository
 {
     private static Employees list = new Employees();
     

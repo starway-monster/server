@@ -1,6 +1,6 @@
 package monster.starway.server.services;
 
-import monster.starway.server.dao.EmployeeDAO;
+import monster.starway.server.data.repository.EmployeeRepository;
 import monster.starway.server.dto.EmployeesDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmployeesService {
     @Autowired
-    private EmployeeDAO employeeDao;
+    private EmployeeRepository employeeRepository;
 
     public EmployeesDTO getAllEmployees()
     {
-        EmployeesDTO employeesDTO = new EmployeesDTO(employeeDao.getAllEmployees());
+        EmployeesDTO employeesDTO = new EmployeesDTO(employeeRepository.getAllEmployees());
         return employeesDTO;
     }
 }
