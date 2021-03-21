@@ -12,7 +12,8 @@ public class WayController {
     @Autowired
     private WayService wayService;
 
-    @GetMapping(path="/search", produces = "application/json")
+//    @CrossOrigin
+    @GetMapping(path="/search")
     public String getSearchResult(
             @RequestParam(name ="from") String from,
             @RequestParam(name = "to") String to,
