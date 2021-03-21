@@ -12,7 +12,7 @@ public class WayController {
     @Autowired
     private WayService wayService;
 
-//    @CrossOrigin
+    @CrossOrigin
     @GetMapping(path="/search")
     public String getSearchResult(
             @RequestParam(name ="from") String from,
