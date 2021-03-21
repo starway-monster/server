@@ -9,14 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/employees")
-public class EmployeeController 
-{
+public class EmployeeController {
     @Autowired
     private EmployeesService employeeService;
 
     @GetMapping(path="", produces = "application/json")
-    public EmployeesDTO getEmployees()
-    {
+    public EmployeesDTO getEmployees() {
         return employeeService.getAllEmployees();
     }
 }
