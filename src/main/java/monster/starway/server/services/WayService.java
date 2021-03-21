@@ -3,18 +3,21 @@ package monster.starway.server.services;
 import monster.starway.server.data.entities.Dijkstra;
 import monster.starway.server.data.entities.Graph;
 import monster.starway.server.data.entities.Node;
+import monster.starway.server.dto.PathDTO;
+import monster.starway.server.dto.SearchDTO;
+import monster.starway.server.dto.ZoneDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class WayService {
-    public String getFilteredWays(String from, String to, List<String> excludedZones) {
-        String result = getEchoMessage(from, to, excludedZones) + "\n" + getWay();
-        return result;
+    public SearchDTO getFilteredWays(String from, String to, List<String> excludedZones) {
+        return getWay();
     }
 
-    private String getWay() {
+    private SearchDTO getWay() {
         Node nodeA = new Node("A");
         Node nodeB = new Node("B");
         Node nodeC = new Node("C");
@@ -24,39 +27,40 @@ public class WayService {
         nodeB.addDestination(nodeC, 20);
         nodeC.addDestination(nodeB, 20);
 
-        Graph graph = new Graph();
-        graph.addNode(nodeA);
-        graph.addNode(nodeB);
-        graph.addNode(nodeC);
+        List<Node> nodes = new ArrayList<>(){{
+            add(nodeA);
+            add(nodeB);
+            add(nodeC);
+        }};
+        Graph graph = getZonesGraph(nodes);
 
         Dijkstra.calculateShortestPathFromSource(graph, nodeA);
 
-        String aToB = "";
-        for (Node node : nodeB.getShortestPath()) {
-            aToB += node.getName() + "--->";
-        }
-        aToB.substring(0, aToB.length() - 5);
-        aToB += "B: " + nodeB.getDistance();
+        List<Node> pathByTransfers = nodeB.getShortestPath();
+        pathByTransfers.add(nodeB);
+        List<Node> pathByFee = nodeC.getShortestPath();
+        pathByFee.add(nodeC);
 
-        String aToC = "";
-        for (Node node : nodeC.getShortestPath()) {
-            aToC += node.getName() + "--->";
-        }
-        aToC.substring(0, aToC.length() - 5);
-        aToC += "C: " + nodeC.getDistance();
+        PathDTO pathDTOByTransfers = transformToPathDTO(pathByTransfers, nodeB.getDistance());
+        PathDTO pathDTOByFee = transformToPathDTO(pathByFee, nodeC.getDistance());
 
-        return aToB + "\n" + aToC;
+        return new SearchDTO(pathDTOByTransfers, pathDTOByFee);
     }
 
-    private String getEchoMessage(String from, String to, List<String> excludedZones) {
-        String excluded = "";
-        if (excludedZones != null && excludedZones.size() > 0) {
-            excluded = ", excluded:";
-            for (String excludedZone: excludedZones) {
-                excluded += excludedZone + ",";
-            }
-            excluded = excluded.substring(0, excluded.length()-2);
+    private Graph getZonesGraph(List<Node> nodes) {
+        Graph graph = new Graph();
+        for (Node node : nodes) {
+            graph.addNode(node);
         }
-        return String.format("Hello from: " + from + ", to:" + to + excluded);
+        return graph;
+    }
+
+    public PathDTO transformToPathDTO(List<Node> nodes, int fee) {
+        List<ZoneDTO> graph = new ArrayList<>();
+        for (Node node : nodes)
+            graph.add(new ZoneDTO(node.getName()));
+        PathDTO pathDTO = new PathDTO(graph, nodes.size(), fee);
+
+        return pathDTO;
     }
 }

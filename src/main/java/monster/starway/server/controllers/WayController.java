@@ -1,5 +1,6 @@
 package monster.starway.server.controllers;
 
+import monster.starway.server.dto.SearchDTO;
 import monster.starway.server.services.WayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ public class WayController {
 
     @CrossOrigin
     @GetMapping(path="/search")
-    public String getSearchResult(
+    public SearchDTO getSearchResult(
             @RequestParam(name ="from") String from,
             @RequestParam(name = "to") String to,
             @RequestParam(name = "exclude", required = false) List<String> excludedZones
