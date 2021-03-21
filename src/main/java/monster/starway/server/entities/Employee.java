@@ -1,4 +1,4 @@
-package com.howtodoinjava.rest.model;
+package monster.starway.server.entities;
 
 public class Employee {
 

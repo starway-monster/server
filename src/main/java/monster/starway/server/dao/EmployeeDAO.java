@@ -1,9 +1,8 @@
-package com.howtodoinjava.rest.dao;
+package monster.starway.server.dao;
 
+import monster.starway.server.entities.Employee;
+import monster.starway.server.entities.Employees;
 import org.springframework.stereotype.Repository;
-
-import com.howtodoinjava.rest.model.Employee;
-import com.howtodoinjava.rest.model.Employees;
 
 @Repository
 public class EmployeeDAO 

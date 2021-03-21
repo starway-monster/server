@@ -4,13 +4,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.howtodoinjava.demo</groupId>
-	<artifactId>springbootdemo</artifactId>
+	<groupId>monster.starway.server</groupId>
+	<artifactId>starway-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>SpringBootDemo</name>
-	<description>Spring Boot2 REST API Demo for http://howtodoinjava.com</description>
+	<name>StarwayServer</name>
+	<description>Spring Boot2 REST API starway server for https://starway.monster</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

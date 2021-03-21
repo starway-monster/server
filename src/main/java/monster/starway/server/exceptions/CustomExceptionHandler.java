@@ -1,4 +1,4 @@
-package com.howtodoinjava.rest.exception;
+package monster.starway.server.exceptions;
 
 import java.util.ArrayList;
 import java.util.List;

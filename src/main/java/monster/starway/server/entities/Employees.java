@@ -1,4 +1,4 @@
-package com.howtodoinjava.rest.model;
+package monster.starway.server.entities;
 
 import java.util.ArrayList;
 import java.util.List;
