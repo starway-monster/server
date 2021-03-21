@@ -1,8 +1,10 @@
 package monster.starway.server.services;
 
+import monster.starway.server.data.entities.Channel;
 import monster.starway.server.data.entities.Dijkstra;
 import monster.starway.server.data.entities.Graph;
 import monster.starway.server.data.entities.Node;
+import monster.starway.server.data.repository.ChannelRepository;
 import monster.starway.server.dto.PathDTO;
 import monster.starway.server.dto.SearchDTO;
 import monster.starway.server.dto.ZoneDTO;
@@ -13,7 +15,14 @@ import java.util.List;
 
 @Service
 public class WayService {
+    private final ChannelRepository channelRepository;
+
+    public WayService(ChannelRepository channelRepository) {
+        this.channelRepository = channelRepository;
+    }
+
     public SearchDTO getFilteredWays(String from, String to, List<String> excludedZones) {
+        List<Channel> channelsWithDuplicates = channelRepository.getChannelsWithDuplicates();
         return getWay();
     }
 
