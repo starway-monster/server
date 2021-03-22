@@ -14,7 +14,7 @@ import java.util.*;
 
 @Service
 public class WayService {
-    private ChannelRepository channelRepository;
+    private final ChannelRepository channelRepository;
 
     public WayService(ChannelRepository channelRepository) {
         this.channelRepository = channelRepository;
@@ -25,18 +25,14 @@ public class WayService {
         Set<Node> nodes = transformChannelsToNodes(channelsWithDuplicates);
         Graph graph = createGraph(nodes);
         initiateSourceZone(from, nodes, graph);
-
         Node nodeTo = getNodeByName(nodes, to);
-        List<Node> path = nodeTo.getShortestPath();
-        path.add(nodeTo);
+        List<Node> path = getPath(nodeTo);
 
-        PathDTO pathDTO = transformToPathDTO(path, nodeTo.getDistance());
-
-        SearchDTO searchDTO = new SearchDTO(pathDTO, pathDTO);
+        SearchDTO searchDTO = transformToSearchDTO(nodeTo, path);
 
         return searchDTO;
     }
-    
+
     private Set<Node> transformChannelsToNodes(List<Channel> channels) {
         Map<String, Node> nodes = getNodesFromChannels(channels);
         initiateNodesDirections(nodes, channels);
@@ -93,6 +89,18 @@ public class WayService {
             }
 //            todo: throw exception
         }
+    }
+
+    private List<Node> getPath(Node nodeTo) {
+        List<Node> path = nodeTo.getShortestPath();
+        path.add(nodeTo);
+        return path;
+    }
+
+    private SearchDTO transformToSearchDTO(Node nodeTo, List<Node> path) {
+        PathDTO pathDTO = transformToPathDTO(path, nodeTo.getDistance());
+        SearchDTO searchDTO = new SearchDTO(pathDTO, pathDTO);
+        return searchDTO;
     }
 
     public PathDTO transformToPathDTO(List<Node> nodes, int fee) {
