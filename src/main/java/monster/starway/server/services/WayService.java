@@ -4,10 +4,10 @@ import monster.starway.server.data.entities.Channel;
 import monster.starway.server.data.entities.Dijkstra;
 import monster.starway.server.data.entities.Graph;
 import monster.starway.server.data.entities.Node;
-import monster.starway.server.data.repository.ChannelRepository;
-import monster.starway.server.dto.PathDTO;
-import monster.starway.server.dto.SearchDTO;
-import monster.starway.server.dto.EdgeDTO;
+import monster.starway.server.data.repositories.ChannelRepository;
+import monster.starway.server.data.dto.PathDTO;
+import monster.starway.server.data.dto.SearchDTO;
+import monster.starway.server.data.dto.EdgeDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

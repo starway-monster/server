@@ -1,4 +1,4 @@
-package monster.starway.server.data.repository;
+package monster.starway.server.data.repositories;
 
 import monster.starway.server.constants.QueryConstants;
 import monster.starway.server.data.entities.Channel;

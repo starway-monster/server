@@ -1,6 +1,6 @@
 package monster.starway.server.controllers;
 
-import monster.starway.server.dto.SearchDTO;
+import monster.starway.server.data.dto.SearchDTO;
 import monster.starway.server.services.WayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

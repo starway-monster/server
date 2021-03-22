@@ -1,4 +1,4 @@
-package monster.starway.server.dto;
+package monster.starway.server.data.dto;
 
 import java.util.Objects;
 
