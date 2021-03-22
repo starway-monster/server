@@ -4,24 +4,24 @@ import java.util.List;
 import java.util.Objects;
 
 public class PathDTO {
-    public List<ZoneDTO> graph;
+    public List<EdgeDTO> graph;
     public int transfers;
     public int fee;
 
     public PathDTO() {
     }
 
-    public PathDTO(List<ZoneDTO> graph, int transfers, int fee) {
+    public PathDTO(List<EdgeDTO> graph, int transfers, int fee) {
         this.graph = graph;
         this.transfers = transfers;
         this.fee = fee;
     }
 
-    public List<ZoneDTO> getGraph() {
+    public List<EdgeDTO> getGraph() {
         return graph;
     }
 
-    public void setGraph(List<ZoneDTO> graph) {
+    public void setGraph(List<EdgeDTO> graph) {
         this.graph = graph;
     }
 

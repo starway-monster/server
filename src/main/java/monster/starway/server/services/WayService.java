@@ -7,7 +7,7 @@ import monster.starway.server.data.entities.Node;
 import monster.starway.server.data.repository.ChannelRepository;
 import monster.starway.server.dto.PathDTO;
 import monster.starway.server.dto.SearchDTO;
-import monster.starway.server.dto.ZoneDTO;
+import monster.starway.server.dto.EdgeDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -104,9 +104,16 @@ public class WayService {
     }
 
     public PathDTO transformToPathDTO(List<Node> nodes, int fee) {
-        List<ZoneDTO> graph = new ArrayList<>();
-        for (Node node : nodes)
-            graph.add(new ZoneDTO(node.getName()));
+        List<EdgeDTO> graph = new ArrayList<>();
+        Node fromZone = nodes.get(0);
+        for (Node node : nodes) {
+            Integer edgeFee = fromZone.getAdjacentNodes().get(node);
+            int stepFee = edgeFee != null ? edgeFee.intValue() : 0;
+            graph.add(new EdgeDTO(fromZone.getName(), node.getName(), stepFee));
+            fromZone = node;
+        }
+        graph = graph.subList(1, graph.size());
+
         PathDTO pathDTO = new PathDTO(graph, nodes.size(), fee);
 
         return pathDTO;
