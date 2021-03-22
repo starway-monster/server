@@ -20,7 +20,35 @@ public class Channel {
     @NonNull
     private String targetZone;
 
+    @Id
     @Column(name = "distance")
     @NonNull
     private Integer distance;
+
+    @NonNull
+    public String getSourceZone() {
+        return sourceZone;
+    }
+
+    public void setSourceZone(@NonNull String sourceZone) {
+        this.sourceZone = sourceZone;
+    }
+
+    @NonNull
+    public String getTargetZone() {
+        return targetZone;
+    }
+
+    public void setTargetZone(@NonNull String targetZone) {
+        this.targetZone = targetZone;
+    }
+
+    @NonNull
+    public Integer getDistance() {
+        return distance;
+    }
+
+    public void setDistance(@NonNull Integer distance) {
+        this.distance = distance;
+    }
 }

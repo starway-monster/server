@@ -3,7 +3,7 @@ server:
 
 spring:
   main:
-    web-application-type: none
+#    web-application-type: none
 
     jpa:
       open-in-view: false
@@ -18,4 +18,9 @@ spring:
           jdbc:
             lob:
               non_contextual_creation: true
-
+          temp:
+            use_jdbc_metadata_defaults: false # Disable feature detection by this undocumented parameter. Check the org.hibernate.engine.jdbc.internal.JdbcServiceImpl.configure method for more details.
+#      database-platform: org.hibernate.dialect.PostgreSQL9Dialect # Because detection is disabled you have to set correct dialect by hand.
+logging:
+  level:
+    org.hibernate.engine.jdbc.env.internal.LobCreatorBuilderImpl: ERROR

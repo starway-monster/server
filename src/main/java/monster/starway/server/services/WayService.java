@@ -8,6 +8,7 @@ import monster.starway.server.data.repository.ChannelRepository;
 import monster.starway.server.dto.PathDTO;
 import monster.starway.server.dto.SearchDTO;
 import monster.starway.server.dto.ZoneDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,7 +16,8 @@ import java.util.List;
 
 @Service
 public class WayService {
-    private final ChannelRepository channelRepository;
+//    @Autowired
+    private ChannelRepository channelRepository;
 
     public WayService(ChannelRepository channelRepository) {
         this.channelRepository = channelRepository;
