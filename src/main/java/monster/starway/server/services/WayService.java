@@ -22,6 +22,7 @@ public class WayService {
 
     public SearchDTO getFilteredWays(String from, String to, List<String> excludedZones) {
         List<Channel> channelsWithDuplicates = channelRepository.getChannelsWithDuplicates();
+        excludeZones(channelsWithDuplicates, excludedZones);
         Set<Node> nodes = transformChannelsToNodes(channelsWithDuplicates);
         Graph graph = createGraph(nodes);
         initiateSourceZone(from, nodes, graph);
@@ -31,6 +32,18 @@ public class WayService {
         SearchDTO searchDTO = transformToSearchDTO(nodeTo, path);
 
         return searchDTO;
+    }
+
+    private void excludeZones(List<Channel> channels, List<String> excludedZones) {
+        List<Channel> excludedChannels = new ArrayList<>();
+        for (Channel channel : channels) {
+            for (String zoneName : excludedZones) {
+                if (channel.getSourceZone().equalsIgnoreCase(zoneName) ||
+                        channel.getTargetZone().equalsIgnoreCase(zoneName))
+                    excludedChannels.add(channel);
+            }
+        }
+        channels.removeAll(excludedChannels);
     }
 
     private Set<Node> transformChannelsToNodes(List<Channel> channels) {
