@@ -129,7 +129,7 @@ public class WayService {
         }
         graph = graph.subList(1, graph.size());
 
-        PathDTO pathDTO = new PathDTO(graph, nodes.size(), fee);
+        PathDTO pathDTO = new PathDTO(graph, nodes.size() - 1, fee);
 
         return pathDTO;
     }
