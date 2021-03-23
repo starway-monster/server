@@ -35,15 +35,17 @@ public class WayService {
     }
 
     private void excludeZones(List<Channel> channels, List<String> excludedZones) {
-        List<Channel> excludedChannels = new ArrayList<>();
-        for (Channel channel : channels) {
-            for (String zoneName : excludedZones) {
-                if (channel.getSourceZone().equalsIgnoreCase(zoneName) ||
-                        channel.getTargetZone().equalsIgnoreCase(zoneName))
-                    excludedChannels.add(channel);
+        if (excludedZones != null) {
+            List<Channel> excludedChannels = new ArrayList<>();
+            for (Channel channel : channels) {
+                for (String zoneName : excludedZones) {
+                    if (channel.getSourceZone().equalsIgnoreCase(zoneName) ||
+                            channel.getTargetZone().equalsIgnoreCase(zoneName))
+                        excludedChannels.add(channel);
+                }
             }
+            channels.removeAll(excludedChannels);
         }
-        channels.removeAll(excludedChannels);
     }
 
     private Set<Node> transformChannelsToNodes(List<Channel> channels) {
