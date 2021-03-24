@@ -8,6 +8,7 @@ import monster.starway.server.data.repositories.ChannelRepository;
 import monster.starway.server.data.dto.PathDTO;
 import monster.starway.server.data.dto.SearchDTO;
 import monster.starway.server.data.dto.EdgeDTO;
+import monster.starway.server.exceptions.RouteException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -28,6 +29,9 @@ public class WayService {
         initiateSourceZone(from, nodes, graph);
         Node nodeTo = getNodeByName(nodes, to);
         List<Node> path = getPath(nodeTo);
+
+        //если path.size = 1, то проверить, связаны ли зоны напрямую, если нет, то они не имеют пути
+        validatePath(path, nodeTo);
 
         SearchDTO searchDTO = transformToSearchDTO(nodeTo, path);
 
@@ -110,6 +114,19 @@ public class WayService {
         List<Node> path = nodeTo.getShortestPath();
         path.add(nodeTo);
         return path;
+    }
+
+    private void validatePath(List<Node> path, Node nodeTo) {
+        if (path.size() > 1)
+            return;
+        if (path.size() == 0)
+            throw new RouteException("Calculation error");
+        for (Node node : path.get(0).getAdjacentNodes().keySet()) {
+            if (node.equals(nodeTo)) {
+                return;
+            }
+        }
+        throw new RouteException("Unreachable route");
     }
 
     private SearchDTO transformToSearchDTO(Node nodeTo, List<Node> path) {

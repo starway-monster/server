@@ -22,6 +22,16 @@ public class CustomExceptionHandler
         ErrorResponse error = new ErrorResponse("Bad Request", details);
         return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
     }
+
+
+    @ExceptionHandler(RouteException.class)
+    public final ResponseEntity<Object> handleUnreachableRouteExceptions(RouteException ex, WebRequest request)
+    {
+        List<String> details = new ArrayList<>();
+        details.add(ex.getLocalizedMessage());
+        ErrorResponse error = new ErrorResponse("The route could not be received", details);
+        return new ResponseEntity(error, HttpStatus.NOT_FOUND);
+    }
     
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) 
