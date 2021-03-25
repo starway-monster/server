@@ -34,7 +34,9 @@ public class WayController {
         if (zoneCurrent == null && zoneSource == null ||
                 (zoneCurrent != null && zoneCurrent.equalsIgnoreCase(zoneSource)) ||
                 (zoneSource != null && zoneSource.equalsIgnoreCase(zoneCurrent)))
-            throw new ValidationExceptoin("Wrong arguments");
+            throw new ValidationExceptoin("Wrong zone arguments");
+        if (!trace.contains("transfer/"))
+            throw new ValidationExceptoin("Wrong trace argument");
         return "zonecurrent: " + zoneCurrent + "\nzonesource: " + zoneSource + "\ntrace: " + trace;
     }
 }
