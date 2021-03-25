@@ -21,6 +21,40 @@ public class WayService {
         this.channelRepository = channelRepository;
     }
 
+    public PathDTO getUnescrowPath(String zoneCurrent, String zoneSource, String trace) {
+        PathDTO pathFromCurrent = null;
+        PathDTO pathFromSource = null;
+        PathDTO pathResult = null;
+
+        if (zoneCurrent != null) {
+            pathFromCurrent = getUnescrowPathFromCurrentZone();
+        }
+        if (zoneSource != null) {
+            pathFromSource = getUnescrowPathFromSourceZone();
+        }
+        if (pathFromCurrent == null && pathFromSource == null)
+            throw new RouteException("Pathfinding error");
+        if (zoneCurrent != null && zoneSource != null &&
+                !((pathFromCurrent != null && pathFromCurrent.equals(pathFromSource)) ||
+                        (pathFromSource != null && pathFromSource.equals(pathFromCurrent)))) {
+            throw new RouteException("Denom trace doesn't correspond to the specified zones");
+        }
+        if (zoneCurrent != null)
+            pathResult = pathFromCurrent;
+        if (zoneSource != null)
+            pathResult = pathFromSource;
+        return pathResult;
+    }
+
+    private PathDTO getUnescrowPathFromCurrentZone() {
+        return null;
+    }
+
+    private PathDTO getUnescrowPathFromSourceZone() {
+        return null;
+    }
+
+
     public SearchDTO getFilteredWays(String from, String to, List<String> excludedZones) {
         List<Channel> channelsWithDuplicates = channelRepository.getChannelsWithDuplicates();
         excludeZones(channelsWithDuplicates, excludedZones);

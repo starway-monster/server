@@ -1,7 +1,8 @@
 package monster.starway.server.controllers;
 
+import monster.starway.server.data.dto.PathDTO;
 import monster.starway.server.data.dto.SearchDTO;
-import monster.starway.server.exceptions.ValidationExceptoin;
+import monster.starway.server.exceptions.ValidationException;
 import monster.starway.server.services.WayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class WayController {
 
     @CrossOrigin
     @GetMapping(path="/un-escrow")
-    public String getUnescrowPath(
+    public PathDTO getUnescrowPath(
             @RequestParam(name ="zonecurrent", required = false) String zoneCurrent,
             @RequestParam(name = "zonesource", required = false) String zoneSource,
             @RequestParam(name = "trace") String trace
@@ -34,9 +35,10 @@ public class WayController {
         if (zoneCurrent == null && zoneSource == null ||
                 (zoneCurrent != null && zoneCurrent.equalsIgnoreCase(zoneSource)) ||
                 (zoneSource != null && zoneSource.equalsIgnoreCase(zoneCurrent)))
-            throw new ValidationExceptoin("Wrong zone arguments");
+            throw new ValidationException("Wrong zone arguments");
         if (!trace.contains("transfer/"))
-            throw new ValidationExceptoin("Wrong trace argument");
-        return "zonecurrent: " + zoneCurrent + "\nzonesource: " + zoneSource + "\ntrace: " + trace;
+            throw new ValidationException("Wrong trace argument. Only ibc-transfer module supported");
+
+        return wayService.getUnescrowPath(zoneCurrent, zoneSource, trace);
     }
 }

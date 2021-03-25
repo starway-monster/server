@@ -1,10 +1,10 @@
 package monster.starway.server.exceptions;
 
-public class ValidationExceptoin extends RuntimeException
+public class ValidationException extends RuntimeException
 {
     private static final long serialVersionUID = 1L;
 
-    public ValidationExceptoin(String exception) {
+    public ValidationException(String exception) {
         super(exception);
     }
 }
