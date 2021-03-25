@@ -1,14 +1,13 @@
 package monster.starway.server.services;
 
-import monster.starway.server.data.entities.Channel;
-import monster.starway.server.data.entities.Dijkstra;
-import monster.starway.server.data.entities.Graph;
-import monster.starway.server.data.entities.Node;
+import monster.starway.server.data.entities.*;
 import monster.starway.server.data.repositories.ChannelRepository;
 import monster.starway.server.data.dto.PathDTO;
 import monster.starway.server.data.dto.SearchDTO;
 import monster.starway.server.data.dto.EdgeDTO;
+import monster.starway.server.data.repositories.ZoneRepository;
 import monster.starway.server.exceptions.RouteException;
+import monster.starway.server.exceptions.ValidationException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -16,9 +15,11 @@ import java.util.*;
 @Service
 public class WayService {
     private final ChannelRepository channelRepository;
+    private final ZoneRepository zoneRepository;
 
-    public WayService(ChannelRepository channelRepository) {
+    public WayService(ChannelRepository channelRepository, ZoneRepository zoneRepository) {
         this.channelRepository = channelRepository;
+        this.zoneRepository = zoneRepository;
     }
 
     public PathDTO getUnescrowPath(String zoneCurrent, String zoneSource, String trace) {
@@ -27,31 +28,64 @@ public class WayService {
         PathDTO pathResult = null;
 
         if (zoneCurrent != null) {
-            pathFromCurrent = getUnescrowPathFromCurrentZone();
+            pathFromCurrent = getUnescrowCurrentZone(zoneCurrent, trace);
         }
         if (zoneSource != null) {
-            pathFromSource = getUnescrowPathFromSourceZone();
+            pathFromSource = getUnescrowSourceZone(zoneSource, trace);
         }
         if (pathFromCurrent == null && pathFromSource == null)
             throw new RouteException("Pathfinding error");
-        if (zoneCurrent != null && zoneSource != null &&
-                !((pathFromCurrent != null && pathFromCurrent.equals(pathFromSource)) ||
-                        (pathFromSource != null && pathFromSource.equals(pathFromCurrent)))) {
+        if (pathFromCurrent != null && pathFromSource != null && !pathFromCurrent.equals(pathFromSource)) {
             throw new RouteException("Denom trace doesn't correspond to the specified zones");
         }
-        if (zoneCurrent != null)
+
+        if (pathFromCurrent != null)
             pathResult = pathFromCurrent;
-        if (zoneSource != null)
+        if (pathFromSource != null)
             pathResult = pathFromSource;
+        if (pathResult == null)
+            throw new RouteException("Path not found");
         return pathResult;
     }
 
-    private PathDTO getUnescrowPathFromCurrentZone() {
-        return null;
+    private PathDTO getUnescrowCurrentZone(String zone, String trace) {
+        List<String> channels = getChannelsNamesByTrace(trace);
+        return unescrowPathSearchFromCurrentZone(zone, channels);
     }
 
-    private PathDTO getUnescrowPathFromSourceZone() {
-        return null;
+    private PathDTO getUnescrowSourceZone(String zone, String trace) {
+        List<String> channels = getChannelsNamesByTrace(trace);
+        return null; // todo: need to implement unescrowPathSearchFromSourceZone
+    }
+
+    private PathDTO unescrowPathSearchFromCurrentZone(String zone, List<String> channels) {
+        List<EdgeDTO> edges = new ArrayList<>();
+        for (String channel : channels) {
+            List<Zone> zones = zoneRepository.getZoneByChannelAndCounerpartyZone(zone, channel);
+            if (zones == null || zones.size() > 1) {
+                throw new RouteException("Pathfinding error");
+            }
+            if (zones.size() == 0)
+                return null;
+            String counterpartyZone = zones.get(0).getChainId().toLowerCase();
+            edges.add(new EdgeDTO(
+                    zone.toLowerCase(),
+                    counterpartyZone,
+                    1, //fee stub
+                    channel
+            ));
+            zone = counterpartyZone;
+        }
+        return new PathDTO(edges, edges.size(), edges.size()); //fee stub
+    }
+
+    private List<String> getChannelsNamesByTrace(String trace) {
+        List<String> channels = Arrays.asList(trace.toLowerCase().replace("transfer", "").replace("//", "/").split("/"));
+        String[] transfer = trace.split("/");
+        if (channels.size() < 3 || transfer.length < 3 || !transfer[transfer.length - 3].equalsIgnoreCase("transfer"))
+            throw new ValidationException("Wrong trace");
+        channels = channels.subList(1, channels.size() - 1);
+        return channels;
     }
 
 
@@ -64,7 +98,7 @@ public class WayService {
         Node nodeTo = getNodeByName(nodes, to);
         List<Node> path = getPath(nodeTo);
 
-        //если path.size = 1, то проверить, связаны ли зоны напрямую, если нет, то они не имеют пути
+        //if path.size = 1, then check if the zones are directly connected, if not, then they have no path
         validatePath(path, nodeTo);
 
         SearchDTO searchDTO = transformToSearchDTO(nodeTo, path);
