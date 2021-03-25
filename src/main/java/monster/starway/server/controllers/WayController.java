@@ -1,6 +1,7 @@
 package monster.starway.server.controllers;
 
 import monster.starway.server.data.dto.SearchDTO;
+import monster.starway.server.exceptions.ValidationExceptoin;
 import monster.starway.server.services.WayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,5 +22,19 @@ public class WayController {
             @RequestParam(name = "exclude", required = false) List<String> excludedZones
     ) {
         return wayService.getFilteredWays(from, to, excludedZones);
+    }
+
+    @CrossOrigin
+    @GetMapping(path="/un-escrow")
+    public String getUnescrowPath(
+            @RequestParam(name ="zonecurrent", required = false) String zoneCurrent,
+            @RequestParam(name = "zonesource", required = false) String zoneSource,
+            @RequestParam(name = "trace") String trace
+    ) {
+        if (zoneCurrent == null && zoneSource == null ||
+                (zoneCurrent != null && zoneCurrent.equalsIgnoreCase(zoneSource)) ||
+                (zoneSource != null && zoneSource.equalsIgnoreCase(zoneCurrent)))
+            throw new ValidationExceptoin("Wrong arguments");
+        return "zonecurrent: " + zoneCurrent + "\nzonesource: " + zoneSource + "\ntrace: " + trace;
     }
 }
