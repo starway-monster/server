@@ -1,27 +1,22 @@
 package monster.starway.server.data.dto;
 
+import java.util.List;
 import java.util.Objects;
 
 public class EdgeDTO {
     public String fromZone;
     public String toZone;
     public int fee;
-    public String channel;
+    public List<String> channels;
 
     public EdgeDTO() {
     }
 
-    public EdgeDTO(String fromZone, String toZone, int fee) {
+    public EdgeDTO(String fromZone, String toZone, int fee, List<String> channels) {
         this.fromZone = fromZone;
         this.toZone = toZone;
         this.fee = fee;
-    }
-
-    public EdgeDTO(String fromZone, String toZone, int fee, String channel) {
-        this.fromZone = fromZone;
-        this.toZone = toZone;
-        this.fee = fee;
-        this.channel = channel;
+        this.channels = channels;
     }
 
     public String getFromZone() {
@@ -48,25 +43,24 @@ public class EdgeDTO {
         this.fee = fee;
     }
 
-    public String getChannel() {
-        return channel;
+    public List<String> getChannels() {
+        return channels;
     }
 
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void setChannels(List<String> channels) {
+        this.channels = channels;
     }
-
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EdgeDTO edgeDTO = (EdgeDTO) o;
-        return fee == edgeDTO.fee && Objects.equals(fromZone, edgeDTO.fromZone) && Objects.equals(toZone, edgeDTO.toZone) && Objects.equals(channel, edgeDTO.channel);
+        return fee == edgeDTO.fee && Objects.equals(fromZone, edgeDTO.fromZone) && Objects.equals(toZone, edgeDTO.toZone) && Objects.equals(channels, edgeDTO.channels);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fromZone, toZone, fee, channel);
+        return Objects.hash(fromZone, toZone, fee, channels);
     }
 }

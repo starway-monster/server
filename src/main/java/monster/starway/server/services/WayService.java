@@ -5,6 +5,7 @@ import monster.starway.server.data.repositories.ChannelRepository;
 import monster.starway.server.data.dto.PathDTO;
 import monster.starway.server.data.dto.SearchDTO;
 import monster.starway.server.data.dto.EdgeDTO;
+import monster.starway.server.data.repositories.EdgeChannelRepository;
 import monster.starway.server.data.repositories.ZoneRepository;
 import monster.starway.server.exceptions.RouteException;
 import monster.starway.server.exceptions.ValidationException;
@@ -16,10 +17,12 @@ import java.util.*;
 public class WayService {
     private final ChannelRepository channelRepository;
     private final ZoneRepository zoneRepository;
+    private final EdgeChannelRepository edgeChannelRepository;
 
-    public WayService(ChannelRepository channelRepository, ZoneRepository zoneRepository) {
+    public WayService(ChannelRepository channelRepository, ZoneRepository zoneRepository, EdgeChannelRepository edgeChannelRepository) {
         this.channelRepository = channelRepository;
         this.zoneRepository = zoneRepository;
+        this.edgeChannelRepository = edgeChannelRepository;
     }
 
     public PathDTO getUnescrowPath(String zoneCurrent, String zoneSource, String trace) {
@@ -72,11 +75,11 @@ public class WayService {
                     zone.toLowerCase(),
                     counterpartyZone,
                     1, //fee stub
-                    channel
+                    Collections.singletonList(channel)
             ));
             zone = counterpartyZone;
         }
-        return new PathDTO(edges, edges.size(), edges.size()); //fee stub
+        return new PathDTO(edges, edges.size(), edges.size(), 0); //fee stub
     }
 
     private List<String> getChannelsNamesByTrace(String trace) {
@@ -102,8 +105,35 @@ public class WayService {
         validatePath(path, nodeTo);
 
         SearchDTO searchDTO = transformToSearchDTO(nodeTo, path);
+        fillChannelsInSearch(searchDTO);
 
         return searchDTO;
+    }
+
+    private void fillChannelsInSearch(SearchDTO search) {
+        fillChannelsInPath(search.getPathByTransfers());
+        fillChannelsInPath(search.getPathByFee());
+    }
+
+    private void fillChannelsInPath(PathDTO path) {
+        fillChannelsInEdge(path.getGraph());
+        int combinations = 0;
+        for (EdgeDTO edge : path.getGraph()) {
+            if (edge.getChannels() != null)
+                combinations += combinations + edge.getChannels().size();
+        }
+        path.setChannelCombinations(combinations);
+    }
+
+    private void fillChannelsInEdge(List<EdgeDTO> graph) {
+        for (EdgeDTO edge : graph) {
+            List<EdgeChannel> channelsByZones = edgeChannelRepository.getChannelsByZones(edge.fromZone, edge.toZone);
+            List channels = new LinkedList<String>();
+            for (EdgeChannel edgeChannel : channelsByZones) {
+                channels.add(edgeChannel.getChannelId());
+            }
+            edge.setChannels(channels);
+        }
     }
 
     private void excludeZones(List<Channel> channels, List<String> excludedZones) {
@@ -209,12 +239,13 @@ public class WayService {
         for (Node node : nodes) {
             Integer edgeFee = fromZone.getAdjacentNodes().get(node);
             int stepFee = edgeFee != null ? edgeFee.intValue() : 0;
-            graph.add(new EdgeDTO(fromZone.getName(), node.getName(), stepFee));
+            EdgeDTO edgeDTO = new EdgeDTO(fromZone.getName(), node.getName(), stepFee, null);
+            graph.add(edgeDTO);
             fromZone = node;
         }
         graph = graph.subList(1, graph.size());
 
-        PathDTO pathDTO = new PathDTO(graph, nodes.size() - 1, fee);
+        PathDTO pathDTO = new PathDTO(graph, nodes.size() - 1, fee, 0);
 
         return pathDTO;
     }

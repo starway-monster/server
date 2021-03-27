@@ -1,6 +1,20 @@
 package monster.starway.server.constants;
 
 public interface QueryConstants {
+    String GET_CHANNELS_BY_ZONES = "" +
+            "select\n" +
+            "    channels.channel_id\n" +
+            "from\n" +
+            "    ibc_channels as channels\n" +
+            "inner join ibc_connections as connections\n" +
+            "    on channels.zone = connections.zone and channels.connection_id = connections.connection_id\n" +
+            "inner join ibc_clients as clients\n" +
+            "     on connections.zone = clients.zone and connections.client_id = clients.client_id\n" +
+            "where\n" +
+            "    clients.zone = :source_zone_name and\n" +
+            "    clients.chain_id = :target_zone_name and\n" +
+            "    channels.is_opened = true;";
+
     String GET_ZONE_BY_CHANNEL_AND_COUNTERPARTY_ZONE = "" +
             "select\n" +
             "    clients.chain_id as chain_id\n" +
