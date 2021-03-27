@@ -79,7 +79,7 @@ public class WayService {
             ));
             zone = counterpartyZone;
         }
-        return new PathDTO(edges, edges.size(), edges.size(), 0); //fee stub
+        return new PathDTO(edges, edges.size(), edges.size(), 1); //fee stub
     }
 
     private List<String> getChannelsNamesByTrace(String trace) {
