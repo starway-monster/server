@@ -1,5 +1,7 @@
 # server
 
+> **Rest service written in java. Receives data on channels from the database and is looking for interblockchain paths using the Dijkstra algorithm. Also finds un-escrow routes.**
+
 ## Docker
 
 Docker build:
